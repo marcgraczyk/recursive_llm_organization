@@ -23,12 +23,12 @@ const config: HardhatUserConfig = {
       url: "http://localhost:8545",
     },
     mainnet: {
-      url: `${process.env.MAINNET_PROVIDER}`,
+      url: `${process.env.MAINNET_RPC_URL}`,
       gasPrice: mainnetGwei * 1000000000,
       accounts: [`${process.env.PROD_DEPLOYER_PRIV_KEY}`],
     },
     sepolia: {
-      url: `${process.env.SEPOLIA_PROVIDER}`,
+      url: `${process.env.SEPOLIA_RPC_URL}`,
       accounts: [`${process.env.SEPOLIA_DEPLOYER_PRIV_KEY}`],
     },
   },
