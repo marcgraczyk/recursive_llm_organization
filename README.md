@@ -38,7 +38,7 @@ If you want to deploy to a testnet or mainnet, add a `.env` file with the same c
 
 `npx hardhat run scripts/deploy.ts --network mainnet`
 
-The addresses of all deployed contracts are stored in the `scripts/contracts/addresses.json directory`. Specifically, for Sepolia, the JSON representation of the addresses should appear as follows:
+The addresses of all deployed contracts are stored in the `scripts/contracts/addresses.json` directory. Specifically, for Sepolia, the JSON representation of the addresses should appear as follows:
 
 ```
 {
