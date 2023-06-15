@@ -12,6 +12,7 @@ The underlying architecture and main relationships are shown in the figure below
 
 ![image](https://github.com/Syndika-Corp/dao-evm-research/assets/92053176/58a58a55-c19b-4cb8-8f56-2bba5481dc1b)
 
+An example of proposal flow is shown in `test/dao-use-case.spec.ts`, including proposal creation, vote casting, queuing and execution.
 
 ## Install all dependences
 
@@ -37,7 +38,7 @@ If you want to deploy to a testnet or mainnet, add a `.env` file with the same c
 
 `npx hardhat run scripts/deploy.ts --network mainnet`
 
-All deployed addresses are stored in `scripts/contracts/addresses.json` directory.
+The addresses of all deployed contracts are stored in the scripts/contracts/addresses.json directory. Specifically, for Sepolia, the JSON representation of the addresses should appear as follows:
 
 ```
 {
