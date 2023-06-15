@@ -1,7 +1,6 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import * as dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 const defaultNetwork = "localhost";
 const mainnetGwei = 21;

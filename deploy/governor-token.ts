@@ -14,7 +14,6 @@ async function deployGovernanceToken(): Promise<DaoToken> {
         [TOKEN_NAME, TOKEN_SYMBOL, INIT_TOKEN_SUPPLY]
     );
     await daoToken.waitForDeployment();
-    console.log(`DaoToken address: ${await daoToken.getAddress()}`);
 
     return daoToken;
 }

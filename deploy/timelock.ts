@@ -10,7 +10,6 @@ async function deployTimelock(): Promise<Timelock> {
         [MIN_DELAY, [], [], deployer]
     );
     await timelock.waitForDeployment();
-    console.log(`Timelock address: ${await timelock.getAddress()}`);
 
     return timelock;
 }

@@ -5,9 +5,9 @@ import {
     VOTING_DELAY,
     PROPOSAL_THRESHOLD
 } from "../constants";
-import { DaoToken, Governor, Timelock } from "../typechain-types";
+import { DaoGovernor, DaoToken, Governor, Timelock } from "../typechain-types";
 
-async function deployGovernor(governorToken: DaoToken, timelock: Timelock): Promise<Governor> {
+async function deployGovernor(governorToken: DaoToken, timelock: Timelock): Promise<DaoGovernor> {
     const governor = await ethers.deployContract(
         "DaoGovernor",
         [
@@ -20,7 +20,6 @@ async function deployGovernor(governorToken: DaoToken, timelock: Timelock): Prom
         ]
     );
     await governor.waitForDeployment();
-    console.log(`DaoGovernor address: ${await governor.getAddress()}`);
 
     return governor;
 }

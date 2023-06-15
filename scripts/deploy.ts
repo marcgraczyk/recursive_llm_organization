@@ -3,6 +3,7 @@ import deployGovernanceToken from "../deploy/governor-token";
 import deployTargetContract from "../deploy/target-contract";
 import deployTimelock from "../deploy/timelock";
 import type { BaseContract } from "ethers";
+import { network } from "hardhat";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -19,10 +20,14 @@ async function saveContractAddresses(contracts: Array<BaseContract>) {
   const [governanceToken, timelock, governor, targetContract] = contracts;
 
   const addresses: Object = {
-    DAO_TOKEN: await governanceToken.getAddress(),
-    TIMELOCK: await timelock.getAddress(),
-    DAO_GOVERNOR: await governor.getAddress(),
-    TARGET_CONTRACT: await targetContract.getAddress()
+    network: network.name,
+    chainId: network.config.chainId,
+    contractAddresses: {
+      DAO_TOKEN: await governanceToken.getAddress(),
+      TIMELOCK: await timelock.getAddress(),
+      DAO_GOVERNOR: await governor.getAddress(),
+      TARGET_CONTRACT: await targetContract.getAddress()
+    }
   }
 
   const contractsDir: string = path.join(__dirname, '/..', 'scripts/contracts')

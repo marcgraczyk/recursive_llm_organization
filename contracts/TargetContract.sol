@@ -16,12 +16,7 @@ contract TargetContract is AccessControl {
         _grantRole(OPERATOR_ROLE, _msgSender());
     }
 
-    function getValue()
-        external
-        view
-        onlyRole(OPERATOR_ROLE)
-        returns (uint256)
-    {
+    function getValue() external view returns (uint256) {
         return value;
     }
 

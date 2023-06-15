@@ -1,9 +1,10 @@
 import { ethers } from "hardhat";
-import { TIMELOCK, DAO_GOVERNOR } from "./contracts/addresses.json";
+import { contractAddresses } from "./contracts/addresses.json";
 import { ADDRESS_ZERO } from "../constants";
 
 async function main() {
     const [deployer] = await ethers.getSigners();
+    const { TIMELOCK, DAO_GOVERNOR } = contractAddresses;
     const timelock = await ethers.getContractAt("Timelock", TIMELOCK, deployer);
 
     const PROPOSER_ROLE = await timelock.PROPOSER_ROLE();
