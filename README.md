@@ -1,13 +1,52 @@
-# Sample Hardhat Project
+# DAO Research 
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project represents a simple implementation of on-chain DAO on Ethereum using OpenZeppelin's suite of governance modules. In this implementation, the Governor system consists of three contracts: 
 
-Try running some of the following tasks:
+- [`DaoToken`](https://github.com/Syndika-Corp/dao-evm-research/blob/master/contracts/governance/DaoToken.sol)
+- [`DaoGovernor`](https://github.com/Syndika-Corp/dao-evm-research/blob/master/contracts/governance/DaoGovernor.sol)
+- [`Timelock`](https://github.com/Syndika-Corp/dao-evm-research/blob/master/contracts/governance/Timelock.sol)
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+For illustration purposes the [`TargetContract`](https://github.com/Syndika-Corp/dao-evm-research/blob/master/contracts/TargetContract.sol) was created, which contains methods that serve as targets for specific proposals. 
+
+The underlying architecture and main relationships are shown in the figure below.
+
+![image](https://github.com/Syndika-Corp/dao-evm-research/assets/92053176/58a58a55-c19b-4cb8-8f56-2bba5481dc1b)
+
+
+## Install all dependences
+
+`npm i` or `npm install`
+
+## Compile contracts
+
+`npx hardhat compile`
+
+## Test contracts
+
+`npx hardhat test --network hardhat`
+
+## Deploy contracts
+
+If you want to deploy to a testnet or mainnet, add a `.env` file with the same contents of `.env.example`, but replaced with your variables.
+
+### Sepolia
+
+`npx hardhat run scripts/deploy.ts --network sepolia`
+
+### Ethereum Mainnet
+
+`npx hardhat run scripts/deploy.ts --network mainnet`
+
+All deployed addresses are stored in `scripts/contracts/addresses.json` directory.
+
+```
+{
+    "network": "sepolia",
+    "contractAddresses": {
+        "DAO_TOKEN": "0xb2D92A5f1188f547eB0b6DA0a5d8aa4C0E04c30A",
+        "TIMELOCK": "0xE9262F85C51E2e265b4eB0dc95651fe7591aD172",
+        "DAO_GOVERNOR": "0xB6172e3dC67e4AF5A9A0fffCEF15a94d49c2bA02",
+        "TARGET_CONTRACT": "0xf9D7aa83209C5Ae66aCc8136dF7721889590278D"
+    }
+}
 ```
