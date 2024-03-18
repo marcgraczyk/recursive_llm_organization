@@ -45,7 +45,7 @@ If there are no active proposals during a slot, we could allocate the same rewar
 
 A non empty slot $t$ consists in the following parameters $(t, b_i, P, A_w, A_p, \text{LLM}_w)$ where $b_i$ is the winning bid in the advice auction, $P$ is the generated proposal by the underlying $\text{LLM}_w$, $A_w$ is the entity that set the weights and $A_p$ is the entity that engineered the prompt and submitted the proposal. The payment rule to both $A_p$ and $A_w$ is:
 
-$$ \alpha r - \max b_{-i} $$
+$$\alpha r - \max b_{-i}$$
 where $r$ is the delta in the nominal valuation of the total token supply during $t$.
 
 ### Generative governance
