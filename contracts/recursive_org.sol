@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
 
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.19;
 
 import "./auction.sol";
 
@@ -26,7 +26,16 @@ contract MyGovernor is
     OwnableUpgradeable,
     UUPSUpgradeable
 {
+    struct ProposalDetails {
+        string weightsLink; // Link to the pre-committed weights on Hugging Face
+        string promptStructure; // Description or identifier of the prompt structure used
+        string proposalText; // The resulting text of the proposal
+    }
+
     SecondPriceAuction public auction;
+
+    // Add a mapping to store proposal details indexed by proposal ID
+    mapping(uint256 => ProposalDetails) public proposalDetails;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -54,13 +63,32 @@ contract MyGovernor is
         address[] memory targets,
         uint256[] memory values,
         bytes[] memory calldatas,
-        string memory description
+        string memory description,
+        string memory weightsLink,
+        string memory promptStructure,
+        string memory proposalText
     ) public override returns (uint256) {
+        // Ensure the caller is the auction winner if required
         require(
             msg.sender == auction.lastAuctionWinner(),
             "Caller is not the auction winner"
         );
-        return super.propose(targets, values, calldatas, description);
+
+        uint256 proposalId = super.propose(
+            targets,
+            values,
+            calldatas,
+            description
+        );
+
+        // Store the LLM-related details
+        proposalDetails[proposalId] = ProposalDetails({
+            weightsLink: weightsLink,
+            promptStructure: promptStructure,
+            proposalText: proposalText
+        });
+
+        return proposalId;
     }
 
     function _authorizeUpgrade(
