@@ -1,50 +1,21 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "dotenv/config";
+import "@openzeppelin/hardhat-upgrades";
 
-const defaultNetwork = "localhost";
-const mainnetGwei = 21;
+require("dotenv").config();
 
 const config: HardhatUserConfig = {
-  defaultNetwork,
-  gasReporter: {
-    currency: "USD",
-    coinmarketcap: process.env.COINMARKETCAP || undefined,
+  solidity: "0.8.20",
+  defender: {
+    apiKey: process.env.DEFENDER_KEY as string,
+    apiSecret: process.env.DEFENDER_SECRET as string,
   },
   networks: {
-    hardhat: {
-      forking: {
-        url: "https://eth-mainnet.alchemyapi.io/v2/kYdQOWZIPE-9fbTFQ_NJ_RqJbszUNk-w",
-        blockNumber: 14989351
-      }
-    },
-    localhost: {
-      url: "http://localhost:8545",
-    },
-    mainnet: {
-      url: `${process.env.MAINNET_RPC_URL}`,
-      gasPrice: mainnetGwei * 1000000000,
-      accounts: [`${process.env.PROD_DEPLOYER_PRIV_KEY}`],
-    },
     sepolia: {
-      url: `${process.env.SEPOLIA_RPC_URL}`,
-      accounts: [`${process.env.SEPOLIA_DEPLOYER_PRIV_KEY}`],
+      url: "https://ethereum-sepolia.publicnode.com",
+      chainId: 11155111
     },
   },
-  solidity: {
-    compilers: [
-      {
-        version: "0.8.16",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
-      }
-    ],
-  }
 };
 
 export default config;
-

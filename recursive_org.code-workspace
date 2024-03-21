@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../recursive_org"
+		},
+		{
+			"path": "../deploy-tutorial"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}
