@@ -13,9 +13,19 @@ async function deployGovernanceToken(): Promise<DaoToken> {
         "DaoToken",
         [TOKEN_NAME, TOKEN_SYMBOL, INIT_TOKEN_SUPPLY]
     );
+    //const daoToken = await defender.deployProxy("DaoToken", [TOKEN_NAME, TOKEN_SYMBOL, INIT_TOKEN_SUPPLY]);
+
     await daoToken.waitForDeployment();
 
     return daoToken;
 }
+
+// const upgradeApprovalProcess = await defender.getUpgradeApprovalProcess();
+
+// if (upgradeApprovalProcess.address === undefined) {
+//  throw new Error(`Upgrade approval process with id ${upgradeApprovalProcess.approvalProcessId} has no assigned address`);
+// }
+
+
 
 export default deployGovernanceToken;

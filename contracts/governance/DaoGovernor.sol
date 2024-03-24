@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
+import "./interface/IDGovernor.sol";
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
@@ -14,8 +15,18 @@ contract DaoGovernor is
     GovernorVotes,
     GovernorVotesQuorumFraction,
     GovernorTimelockControl,
-    GovernorSettings
+    GovernorSettings,
+    IDGovernor
 {
+    address private currentWinner;
+    string private huggingFaceRepoLink;
+
+    event ProposalCreated(
+        uint256 proposalId,
+        address proposer,
+        string huggingFaceRepoLink
+    );
+
     constructor(
         IVotes _token,
         TimelockController _timelock,
@@ -30,6 +41,15 @@ contract DaoGovernor is
         GovernorVotesQuorumFraction(_quorumPercentage)
         GovernorTimelockControl(_timelock)
     {}
+
+    function setAuctionWinner(
+        address winner,
+        string memory repoLink
+    ) external override(IDGovernor) {
+        // Access control to ensure only authorized entities can call this function
+        currentWinner = winner;
+        huggingFaceRepoLink = repoLink;
+    }
 
     function votingDelay()
         public
@@ -76,7 +96,21 @@ contract DaoGovernor is
         bytes[] memory calldatas,
         string memory description
     ) public override(Governor, IGovernor) returns (uint256) {
-        return super.propose(targets, values, calldatas, description);
+        require(
+            msg.sender == currentWinner,
+            "Caller is not the auction winner"
+        );
+        uint256 proposalId = super.propose(
+            targets,
+            values,
+            calldatas,
+            description
+        );
+        emit ProposalCreated(proposalId, msg.sender, huggingFaceRepoLink);
+        // Reset currentWinner to ensure one-time use
+        currentWinner = address(0);
+        huggingFaceRepoLink = "";
+        return proposalId;
     }
 
     function cancel(
