@@ -10,8 +10,7 @@ contract Auction {
     uint public secondHighestBid;
     mapping(address => uint) public bids;
     IDGovernor public daoGovernorAddress;
-
-    address public daoGovernorAddress; // Address of the DaoGovernor contract
+    // Address of the DaoGovernor contract
     string public winningRepoLink; // The repository link for the winning proposal
 
     event NewBid(address indexed bidder, uint amount);
