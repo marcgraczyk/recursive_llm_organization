@@ -16,42 +16,43 @@ import "@uniswap/v3-periphery/contracts/interfaces/INonfungiblePositionManager.s
 contract PromptUpdate {
     using SafeERC20 for IERC20;
 
-    //IUniswapV2Router02 private uniswapRouter;
-    IUniswapV3Pool public uniswapPool;
-    //IUniswapV2Factory public uniswapFactory;
-    INonfungiblePositionManager public nonfungiblePositionManager;
-    IUniswapV3Factory public uniswapV3Factory;
-
+    // Constants
     //address private constant UNISWAP_V3_FACTORY_ADDRESS = "...";
     //IUniswapV3Factory private constant uniswapV3Factory =
     //    IUniswapV3Factory(UNISWAP_V3_FACTORY_ADDRESS);
 
-    IERC20 private usdcToken;
-    address private daoTokenAddress;
-    address private owner;
-    address _nonfungiblePositionManager;
-    address _uniswapFactory;
-
+    // Public Variables
+    IUniswapV3Pool public uniswapPool;
+    INonfungiblePositionManager public nonfungiblePositionManager;
+    IUniswapV3Factory public uniswapV3Factory;
+    IMyToken public myToken;
     uint256 public lastUpdateBlock;
     uint256 public lastBidAmount;
     uint24 public fee;
 
-    IMyToken public myToken;
+    // Private Variables
+    // Token-related
+    IERC20 private usdcToken;
+    address private daoTokenAddress;
 
+    // Ownership and management
+    address private owner;
+
+    // Market cap and prompt
     uint256 private lastMarketCap;
-    // Store the last prompter to reward them on the next update
-    address private lastPrompter;
+    address private lastPrompter; // Store the last prompter to reward them on the next update
+
+    address _nonfungiblePositionManager;
+    address _uniswapFactory;
 
     event PromptUpdated(string newPrompt);
 
     constructor(
         address _usdcTokenAddress,
-        //address _uniswapRouterAddress,
         address _daoTokenAddress,
         address _myTokenAddress
     ) {
         usdcToken = IERC20(_usdcTokenAddress);
-        //uniswapRouter = IUniswapV2Router02(_uniswapRouterAddress);
         nonfungiblePositionManager = INonfungiblePositionManager(
             _nonfungiblePositionManager
         );
@@ -103,15 +104,6 @@ contract PromptUpdate {
             myToken.mint(lastPrompter, rewardAmount);
         }
 
-        // Mint DAO tokens equivalent to the USDC amount
-        //uint256 daoTokenAmount = calculateEquivalentDAOTokenAmount(usdcAmount);
-        // Assuming a mint function that mints daoTokenAmount of your DAO's token to this contract.
-        //myToken.mint(address(this), daoTokenAmount);
-
-        // Approve the Uniswap Router to spend USDC and DAO tokens.
-        //usdcToken.approve(address(uniswapRouter), usdcAmount);
-        //IERC20(daoTokenAddress).approve(address(uniswapRouter), daoTokenAmount);
-
         // Add liquidity to Uniswap.
 
         uint256 lowerPrice = (currentPrice * 99) / 100; // 1% below current price
@@ -141,16 +133,6 @@ contract PromptUpdate {
         // Mint a new position
         nonfungiblePositionManager.mint(params);
         //(, , ,uint256 tokenId) =
-        //uniswapRouter.addLiquidity(
-        //    address(usdcToken),
-        //   daoTokenAddress,
-        //    usdcAmount,
-        //    daoTokenAmount,
-        //    0, // Slippage is unavoidable; set minimums to 0 or a sensible value.
-        //    0, // Same for DAO tokens.
-        //    address(this), // Liquidity tokens are sent here.
-        //    block.timestamp + 15 minutes // Deadline to prevent the transaction from hanging.
-        //);
 
         emit PromptUpdated(newPrompt);
         lastUpdateBlock = block.number;
@@ -176,13 +158,15 @@ contract PromptUpdate {
         // Note: This gives the price of token1 in terms of token0
         // need to make sure we get the right price
         price =
-            (uint256(sqrtPriceX96) * uint256(sqrtPriceX96) * 1e18) /
+            (uint256(sqrtPriceX96) * uint256(sqrtPriceX96) * 1e12) /
             (2 ** 192);
 
         if (!isToken0USDC) {
             // If USDC is not token0, adjust the price calculation to reflect USDC in terms of daoToken.
-            price = 1e36 / price; // Invert the price if the base token is not USDC
+            price = 1e24 / price; // Invert the price if the base token is not USDC
         }
+        // double check the decimals
+        // uniswap example uses PoolInfo
 
         return price;
     }
@@ -190,11 +174,8 @@ contract PromptUpdate {
     function approximateTickFromPrice(
         uint256 price
     ) public pure returns (int24 tick) {
-        // Example conversion: This is a simplified and NOT directly accurate way
-        // to convert a 'price' to the Uniswap V3 sqrtPriceX96 format.
-        // You would need to adjust this based on the actual token decimals and
-        // the precise calculation method.
-        uint160 sqrtPriceX96 = uint160(sqrt(price) * 2 ** 96);
+        uint160 sqrtPriceX96 = uint160(sqrt(price / 1e12) * 2 ** 96);
+        // adjust for decimals, double check
 
         // Use TickMath to get the tick at the given sqrt ratio
         tick = TickMath.getTickAtSqrtRatio(sqrtPriceX96);
