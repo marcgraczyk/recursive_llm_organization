@@ -57,7 +57,10 @@ contract MyToken is
         _unpause();
     }
 
-    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
+    function mint(
+        address to,
+        uint256 amount
+    ) public override(IMyToken) onlyRole(MINTER_ROLE) {
         _mint(to, amount);
     }
 

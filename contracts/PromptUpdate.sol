@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 //import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 //import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IMyToken.sol";
+import "./interfaces/IGovernance.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import "@uniswap/v3-core/contracts/libraries/TickMath.sol";
@@ -29,11 +30,12 @@ contract PromptUpdate {
     uint256 public lastUpdateBlock;
     uint256 public lastBidAmount;
     uint24 public fee;
+    IGovernance public governance;
 
     // Private Variables
     // Token-related
     IERC20 private usdcToken;
-    address private daoTokenAddress;
+    IERC20 private daoTokenAddress;
 
     // Ownership and management
     address private owner;
@@ -47,19 +49,30 @@ contract PromptUpdate {
 
     event PromptUpdated(string newPrompt);
 
+    struct ProposalData {
+        address[] targets;
+        uint256[] values;
+        bytes[] calldatas;
+        string description;
+        string currentModelUrl;
+    }
+
     constructor(
         address _usdcTokenAddress,
         address _daoTokenAddress,
-        address _myTokenAddress
+        address _myTokenAddress,
+        address _governanceAddress
     ) {
         usdcToken = IERC20(_usdcTokenAddress);
         nonfungiblePositionManager = INonfungiblePositionManager(
             _nonfungiblePositionManager
         );
         uniswapV3Factory = IUniswapV3Factory(_uniswapFactory);
+        governance = IGovernance(_governanceAddress);
 
-        daoTokenAddress = _daoTokenAddress;
+        daoTokenAddress = IERC20(_daoTokenAddress);
         owner = msg.sender;
+        // double check the line above
 
         lastUpdateBlock = block.number;
         lastBidAmount = 0;
@@ -73,7 +86,11 @@ contract PromptUpdate {
      *
      * @param newPrompt The new prompt to be updated to.
      */
-    function updatePrompt(string memory newPrompt, uint256 usdcAmount) public {
+    function updatePrompt(
+        string memory newPrompt,
+        uint256 tokenAmount,
+        ProposalData memory proposalData
+    ) public {
         uint256 currentPrice = getCurrentPrice();
         uint256 totalSupply = uniswapPool.liquidity(); // Assuming this is a proxy for liquidity
         uint256 currentMarketCap = currentPrice * totalSupply;
@@ -85,10 +102,23 @@ contract PromptUpdate {
         uint256 requiredBid = lastBidAmount / blocksElapsed;
         // Assume the usdcAmount is already in the contract's balance or transferred within this transaction.
         require(
-            usdcAmount > requiredBid,
+            tokenAmount > requiredBid,
             "Bid does not meet the minimum requirement"
         );
-        usdcToken.safeTransferFrom(msg.sender, address(this), usdcAmount);
+
+        daoTokenAddress.safeTransferFrom(
+            msg.sender,
+            address(this),
+            tokenAmount
+        );
+
+        governance.propose(
+            proposalData.targets,
+            proposalData.values,
+            proposalData.calldatas,
+            proposalData.description,
+            proposalData.currentModelUrl
+        );
 
         // reward mechanism
 
@@ -112,18 +142,21 @@ contract PromptUpdate {
         int24 lowerTick = approximateTickFromPrice(lowerPrice);
         int24 upperTick = approximateTickFromPrice(upperPrice);
 
-        usdcToken.approve(address(nonfungiblePositionManager), usdcAmount);
+        daoTokenAddress.approve(
+            address(nonfungiblePositionManager),
+            tokenAmount
+        );
 
         // Parameters for minting a new position
         INonfungiblePositionManager.MintParams
             memory params = INonfungiblePositionManager.MintParams({
                 token0: address(usdcToken),
-                token1: daoTokenAddress,
+                token1: address(daoTokenAddress),
                 fee: fee,
                 tickLower: lowerTick,
                 tickUpper: upperTick,
-                amount0Desired: usdcAmount,
-                amount1Desired: 0,
+                amount0Desired: 0,
+                amount1Desired: tokenAmount,
                 amount0Min: 0,
                 amount1Min: 0,
                 recipient: address(this),
@@ -136,7 +169,7 @@ contract PromptUpdate {
 
         emit PromptUpdated(newPrompt);
         lastUpdateBlock = block.number;
-        lastBidAmount = usdcAmount;
+        lastBidAmount = tokenAmount;
         lastMarketCap = currentMarketCap;
         lastPrompter = msg.sender;
     }
@@ -144,7 +177,7 @@ contract PromptUpdate {
     function getCurrentPrice() public view returns (uint256 price) {
         address poolAddress = uniswapV3Factory.getPool(
             address(usdcToken),
-            daoTokenAddress,
+            address(daoTokenAddress),
             fee
         );
         require(poolAddress != address(0), "Pool does not exist");

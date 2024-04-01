@@ -11,6 +11,9 @@ import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelo
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "./interfaces/IGovernance.sol";
+
+// IGovernance
 
 contract MyGovernor is
     Initializable,
@@ -21,8 +24,14 @@ contract MyGovernor is
     GovernorVotesQuorumFractionUpgradeable,
     GovernorTimelockControlUpgradeable,
     OwnableUpgradeable,
-    UUPSUpgradeable
+    UUPSUpgradeable,
+    IGovernance
 {
+    uint256 private _lastProposalId;
+    string private _lastModelUrl;
+    event ProposalCreated(uint256 indexed proposalID, string currentModelUrl);
+    mapping(uint256 => uint256) private _customVotingPeriods;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -34,7 +43,7 @@ contract MyGovernor is
         address initialOwner
     ) public initializer {
         __Governor_init("MyGovernor");
-        __GovernorSettings_init(50400 /* 1 week */, 50400 /* 1 week */, 0);
+        __GovernorSettings_init(7200 /* 1 day */, 7200 /* 1 day */, 0);
         __GovernorCountingSimple_init();
         __GovernorVotes_init(_token);
         __GovernorVotesQuorumFraction_init(4);
@@ -46,6 +55,60 @@ contract MyGovernor is
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}
+
+    function _setCustomVotingPeriod(
+        uint256 proposalId,
+        uint256 customVotingPeriod
+    ) internal {
+        _customVotingPeriods[proposalId] = customVotingPeriod;
+    }
+
+    function propose(
+        address[] memory targets,
+        uint256[] memory values,
+        bytes[] memory calldatas,
+        string memory description,
+        string memory currentModelUrl
+    ) public override(IGovernance) returns (uint256) {
+        uint256 proposalID = super.propose(
+            targets,
+            values,
+            calldatas,
+            description
+        );
+        emit ProposalCreated(proposalID, currentModelUrl);
+
+        bool isModelUrlChanged = false; // Default to false
+
+        // Only perform the check if _lastModelUrl is not empty
+        if (bytes(_lastModelUrl).length > 0) {
+            isModelUrlChanged =
+                keccak256(abi.encodePacked(currentModelUrl)) !=
+                keccak256(abi.encodePacked(_lastModelUrl));
+        }
+
+        _lastModelUrl = currentModelUrl;
+
+        // Store the currentModelUrl for future comparisons
+
+        // Proceed to call the original propose function
+        uint256 proposalId = super.propose(
+            targets,
+            values,
+            calldatas,
+            description
+        );
+
+        // If isModelUrlChanged is true, adjust the voting period or store information to adjust the voting logic
+        if (isModelUrlChanged) {
+            // Custom logic to handle the voting period adjustment
+            _setCustomVotingPeriod(proposalId, 50400);
+        } else {
+            // default voting period
+            _setCustomVotingPeriod(proposalId, 0);
+        }
+        return proposalID;
+    }
 
     // The following functions are overrides required by Solidity.
 
@@ -64,6 +127,12 @@ contract MyGovernor is
         override(GovernorUpgradeable, GovernorSettingsUpgradeable)
         returns (uint256)
     {
+        uint256 proposalId = _lastProposalId;
+
+        if (_customVotingPeriods[proposalId] != 0) {
+            return _customVotingPeriods[proposalId];
+        }
+
         return super.votingPeriod();
     }
 
