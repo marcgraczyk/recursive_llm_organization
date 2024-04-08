@@ -2,7 +2,7 @@ const { ethers } = require("hardhat");
 
 async function mintTokens() {
     const Token = await ethers.getContractFactory("MockUSDC");
-    const token = await Token.attach("0x12DC69f0e7C55F5Fa79e220cA7dC33eb592F04D1");
+    const token = await Token.attach("0x014f31e84328a6A134dcEF0F58FFB0947fC8a96C");
     const [deployer] = await ethers.getSigners();
 
     console.log(deployer.address);

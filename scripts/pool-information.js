@@ -1,7 +1,7 @@
 const { ethers } = require('ethers');
 
 // Provider
-const providerUrl = 'https://eth-sepolia.g.alchemy.com/v2/DXKbh9gAE81Kq6Enn0uIbIPGOzSTJGuk'; // Example: Infura, Alchemy URL
+const providerUrl = 'https://eth-sepolia.g.alchemy.com/v2/DXKbh9gAE81Kq6Enn0uIbIPGOzSTJGuk';
 const provider = new ethers.providers.JsonRpcProvider(providerUrl);
 
 // Pool Contract Details
@@ -19,8 +19,10 @@ async function getPoolDetails() {
     const token0Address = await poolContract.token0();
     const token1Address = await poolContract.token1();
     const fee = await poolContract.fee();
+    //const address = await poolContract.POOL_ADDRESS();
 
     console.log(fee);
+    //console.log(address);
 
     console.log("Token0 Address:", token0Address);
     console.log("Token1 Address:", token1Address);
@@ -33,6 +35,7 @@ async function getPoolDetails() {
     // Price of token1 in terms of token0
     const price = (sqrtPriceX96 / 2 ** 96) ** 2;
 
+    console.log(slot0);
     console.log(`Current sqrtPriceX96: ${sqrtPriceX96.toString()}`);
     console.log(`Current tick: ${tick}`);
     console.log(`Current price (Token1 per Token0): ${price}`);

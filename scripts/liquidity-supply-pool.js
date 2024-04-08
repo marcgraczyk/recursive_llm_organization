@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const NonfungiblePositionManager = require("../node_modules/@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json");
+const NonfungiblePositionManager = require("@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json");
 const usdcContractFactory = "../artifacts/contracts/MockUSDC.sol/MockUSDC.json";
 const tokenContractFactory = "../artifacts/contracts/MyToken.sol/MyToken.json";
 
@@ -14,8 +14,8 @@ async function main() {
 
 
     // Addresses of the tokens and the NonfungiblePositionManager
-    const USDCAddress = "0x12DC69f0e7C55F5Fa79e220cA7dC33eb592F04D1";
-    const daoTokenAddress = "0x33f559e3BB297C0C294E040Ef0e969614a722CAD";
+    const USDCAddress = "0x014f31e84328a6A134dcEF0F58FFB0947fC8a96C";
+    const daoTokenAddress = "0xbC882cb8Fa7D5355c5FCEfe0BC5a97EB6D91D9e0";
     const positionManagerAddress = "0x1238536071E1c677A632429e3655c799b22cDA52";
 
 
@@ -34,11 +34,11 @@ async function main() {
     const daoTokenContract = new ethers.Contract(daoTokenAddress, ERC20Abi, signer);
 
     const usdcBalance = await usdcContract.balanceOf(signer.address);
-    console.log(`USDC Balance: ${ethers.utils.formatUnits(usdcBalance, 6)}`);
+    console.log(`USDC Balance: ${ethers.utils.formatUnits(usdcBalance)}`);
     const daoTokenBalance = await daoTokenContract.balanceOf(signer.address);
     console.log(`DAO Token Balance: ${ethers.utils.formatEther(daoTokenBalance)}`);
 
-    if (usdcBalance.lt(ethers.utils.parseUnits("100", 6)) || daoTokenBalance.lt(ethers.utils.parseEther("1000"))) {
+    if (usdcBalance.lt(ethers.utils.parseUnits("100")) || daoTokenBalance.lt(ethers.utils.parseEther("1000"))) {
         console.error("Insufficient funds for the transaction");
         return;
     }
@@ -46,10 +46,10 @@ async function main() {
     // Parameters for adding liquidity
     const token0 = USDCAddress < daoTokenAddress ? USDCAddress : daoTokenAddress;
     const token1 = USDCAddress < daoTokenAddress ? daoTokenAddress : USDCAddress;
-    const fee = 500; // Fee tier, e.g., 0.3%
+    const fee = 3000; // Fee tier, e.g., 0.3%
     const tickLower = -60000; // Example tick range
     const tickUpper = 60000; // Example tick range
-    const amount0Desired = ethers.utils.parseUnits("1", 6); // Mock USDC amount
+    const amount0Desired = ethers.utils.parseUnits("1"); // Mock USDC amount
     const amount1Desired = ethers.utils.parseEther("2"); // DAO token amount
     const amount0Min = 0; // Slippage protection
     const amount1Min = 0; // Slippage protection
@@ -63,7 +63,7 @@ async function main() {
 
     // Check USDC allowance
     const usdcAllowance = await usdcContract.allowance(signer.address, positionManagerAddress);
-    console.log(`USDC Allowance for Position Manager: ${ethers.utils.formatUnits(usdcAllowance, 6)} USDC`);
+    console.log(`USDC Allowance for Position Manager: ${ethers.utils.formatUnits(usdcAllowance)} USDC`);
 
     // Check DAO Token allowance
     const daoTokenAllowance = await daoTokenContract.allowance(signer.address, positionManagerAddress);

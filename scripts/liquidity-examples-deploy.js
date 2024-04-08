@@ -1,6 +1,6 @@
 // Import ethers from Hardhat package
 const { ethers, upgrades } = require("hardhat");
-var NonfungiblePositionManagerAddress = "0x1238536071E1c677A632429e3655c799b22cDA52";
+const NonfungiblePositionManagerAddress = "0x1238536071E1c677A632429e3655c799b22cDA52";
 
 async function main() {
     // Grab the contract factory
