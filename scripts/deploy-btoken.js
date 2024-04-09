@@ -13,7 +13,7 @@ async function main() {
     console.log("Deploying BToken");
     const bToken = await BToken.deploy("MockUSDC", "MUSDC", reserveTokenAddress)
 
-    console.log("MyToken deployed to:", bToken.address);
+    console.log("BToken deployed to:", bToken.address);
 }
 
 main()

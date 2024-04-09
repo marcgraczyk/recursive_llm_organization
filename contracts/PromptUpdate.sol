@@ -161,6 +161,7 @@ contract PromptUpdate {
             address(nonfungiblePositionManager),
             tokenAmount
         );
+        // the payment got sent to the prompt update contract, now I send funds from the token contract - needs change
 
         // Parameters for minting a new position
         INonfungiblePositionManager.MintParams
