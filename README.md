@@ -32,6 +32,8 @@ We propose a minimal design of a research organization:
 
 **Mint and Redeem contract**
 
+This contract defines how the token of the research organization is issued to the market and how the market cap is computed for the allocation of the reward.
+
 (token supply, reserve token supply) $=(s, s')$
 
 To mint $x$ tokens one needs to supply reserve tokens according to a cost function:
@@ -77,16 +79,16 @@ governanceMint()
 
 The first one uses the `costToMint()` function i.e one needs to supply reserve tokens to mint. The second one mints without supplying reserve tokens i.e directly increases the token supply without increasing the price in the mint and redeem contract.
 
-There is also a `redeem()` function and a `burn` function.
+There is also a `redeem()` function and a `burn()` function.
 The `redeem()` function burns the submitted tokens and returns reserve tokens diminishing both supplies from the point of the view of the organization.
 
-The `burn` function only diminishes the token supply and does not change the reserve token supply. This increases the reserve token to token ratio.
+The `burn()` function only diminishes the token supply and does not change the reserve token supply. This increases the reserve token to token ratio.
 
 
 **PromptUpdate contract**
 
 There are three economic mechanisms in the contract:
-* the slot payment 
+* the slot payment by the prompter 
     * call `burn()` on the payment if the price goes down
     * keep it in a vault otherwise
 * the fund allocation from the proposal uses `governanceMint()` and is restricted e.g can only increase the supply by 20%
