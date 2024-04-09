@@ -8,8 +8,23 @@
     * proposal = committed weights of the LLMs + highest bidder on the delta of generalized prompts for that "slot", sequential model, one delta reward at a time (higher evaluation horizon also means higher price since the bidder needs to buy out the opportunity cost of the experiments the organization isn't running; more sophisticated mechanisms could allow for non-interfering experiments)
     * A weight setter and a proposer (the one prompting the weight setter's LLM and submitting the proposal)
     * they both get rewarded through a share of the delta of the market cap during a given event impact timeframe (e.g 10% each)
-        
-    
+
+**Specs v1**
+
+* `updatePrompt` function that can be called every `epoch_length`
+* The prompter is the first entity that manages to call the updatePrompt function in a block
+* The model from which prompts are generated is a constitutional model that can be changed through governance. It is a parameter `currentModelUrl` in the contract which would link to e.g a Hugging Face repo.
+* They submit a payment in their transaction, say $b_1$ 
+* $b_1$ is stored by the contract
+* To update the prompt again $n$ epochs since the last prompt update a prompter has to submit a payment that is greater than $\frac{b_1}{n}$ and be the first to do that in the block. 
+* Suppose that the prompt which was submitted with $b_1$ was active during $n$ blocks. If the market cap increases, the underlying prompter receives 10% of the delta in market cap during those $n$ blocks.  
+    * the `PromptUpdate` contract reads the pool's price and the total supply when the prompt is updated, stores the price and the supply. 
+    * the price and total supply at $t_1 are $p_1$ and $T_1$, similarly $p_2$ and $T_2$
+    *  $\delta = p_2 T_2 - p_1 T_1$ in $
+    *  the prompter receives $\frac{0.1 \delta}{p_2}$ tokens, these tokens are minted by the token contract
+* If the market cap decreases the payment $b_1$ is burned
+* There is a two speed system w.r.t the voting period on a proposal. It is a week if the proposal wants to change the `currentModelUrl` or the amount of funds allocated exceeds a critical threshold.
+ 
 
 ### An LLM that serves the research organization
 
