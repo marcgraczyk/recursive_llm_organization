@@ -151,3 +151,30 @@ LLMs are stochastic / non-deterministic since their outputs are generated from a
 ### Motivation : retroactive public good funding
 
 The presented mechanism can be motivated by the integration of retroactive funding mechanisms within the proposals to allocate funds along the objectives of the research organization. This addresses the question of the initial value of the token issued by the research organization (there are no revenue streams initially). Indeed, the mechanism aims at identifying the LLM that will best allocate ressources to the future welfare maximising games. Hence, the value of the token is not justified by the initial present value of the mechanism but by the future value of the welfare maximising games. Under symmetry and under a retroactive mechanism, the welfare maximising games should emerge as natural Shelling points. This is particularly relevant when we expect multiple such networks (such as the research organization) to permissionlessly emerge and funding to be allocated across networks.
+
+---
+
+**TODO**
+
+- [ ] resolve the dependency issue with the upgradeable contracts (the org_v0 branch)
+
+The main branch currently uses non-upgradeable contracts.
+
+**Mint and redeem contract**
+* [ ] modify the cost to mint and reward burn function to reflect the readme (current version is simpler)
+
+**PromptUpdate contract*
+
+* [ ] add the possibility to pay in both the organization's token and usdc for the slot payments
+* [ ] make the minting function a governance parameter
+
+
+**Proposals**
+
+* [ ] test the prompt update contract by submitting a proposal 
+    * the proposal asks to mint tokens 
+* [ ] test the reward mechanism 
+* [ ] test the minimum required next bid
+* [ ] create a token treasury 
+* [ ] submit a proposal to send tokens from this treasury to a given address
+* [ ] test the two speed voting period system
