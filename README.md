@@ -11,9 +11,9 @@
 
 **Specs v1**
 
+* There is only one entity called the prompter while the model from which prompts are generated is a constitutional model that can be changed through governance. It is a parameter `currentModelUrl` in the contract which would link to e.g a Hugging Face repo.
 * `updatePrompt` function that can be called every `epoch_length`
 * The prompter is the first entity that manages to call the updatePrompt function in a block
-* The model from which prompts are generated is a constitutional model that can be changed through governance. It is a parameter `currentModelUrl` in the contract which would link to e.g a Hugging Face repo.
 * They submit a payment in their transaction, say $b_1$ 
 * $b_1$ is stored by the contract
 * To update the prompt again $n$ epochs since the last prompt update a prompter has to submit a payment that is greater than $\frac{b_1}{n}$ and be the first to do that in the block. 
