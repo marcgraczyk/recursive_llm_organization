@@ -163,7 +163,7 @@ The main branch currently uses non-upgradeable contracts.
 **Mint and redeem contract**
 * [ ] modify the cost to mint and reward burn function to reflect the readme (current version is simpler)
 
-**PromptUpdate contract*
+**PromptUpdate contract**
 
 * [ ] add the possibility to pay in both the organization's token and usdc for the slot payments
 * [ ] make the minting function a governance parameter
