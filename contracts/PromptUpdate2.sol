@@ -13,6 +13,7 @@ contract PromptUpdate {
     //IMyToken public myToken;
     uint256 public lastUpdateBlock;
     uint256 public lastBidAmount;
+    uint256 public epochLength;
     IGovernance public governance;
 
     // Private Variables
@@ -45,7 +46,8 @@ contract PromptUpdate {
     constructor(
         address _usdcTokenAddress,
         address _bTokenAddress,
-        address _governanceAddress
+        address _governanceAddress,
+        uint256 _epochLength
     ) {
         owner = msg.sender;
 
@@ -56,6 +58,7 @@ contract PromptUpdate {
 
         lastUpdateBlock = block.number;
         lastBidAmount = 0;
+        epochLength = _epochLength;
     }
 
     /**
@@ -76,9 +79,21 @@ contract PromptUpdate {
         uint256 currentMarketCap = currentPrice * netMint;
 
         uint256 blocksElapsed = block.number - lastUpdateBlock;
-        require(blocksElapsed > 0, "Prompt already updated in this block");
 
-        uint256 requiredBid = lastBidAmount / blocksElapsed;
+        // Check that enough blocks have passed to be at least one epoch length
+        require(
+            blocksElapsed >= epochLength,
+            "Not enough blocks passed since last update."
+        );
+
+        // Require that blocks elapsed since the last update is an exact multiple of epoch length
+        require(
+            blocksElapsed % epochLength == 0,
+            "Update can only occur at exact epoch multiples."
+        );
+
+        uint256 epochElapsed = blocksElapsed / epochLength;
+        uint256 requiredBid = lastBidAmount / epochElapsed;
 
         require(
             tokenAmount > requiredBid,
@@ -109,9 +124,8 @@ contract PromptUpdate {
             IBToken(bToken).governanceBurn(address(this), tokenAmount);
         }
 
-        // need to mint the correct nominal value
-
         // if the market cap decreased burn the token amount
+        // give a bigger allowance for negative rewards?
 
         emit PromptUpdated(newPrompt);
         lastUpdateBlock = block.number;
