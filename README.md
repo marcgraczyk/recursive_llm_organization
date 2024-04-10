@@ -14,7 +14,7 @@ We propose a minimal design of a research organization:
 * a higher evaluation horizon (more slots) also means higher bidding price since the bidder needs to buy out the opportunity cost of the experiments the organization isn't running (more sophisticated mechanisms could allow for non-interfering experiments)
     
 
-### Specs v1
+### Specs v0
 
 * There is only one entity called the prompter. The model against which prompts are evaluated is a constitutional model that can be changed through governance. It is a parameter `currentModelUrl` in the contract which would link to e.g a Hugging Face repo.
 * All the logic is in a `PromptUpdate` contract containing a`updatePrompt` function that can be called every `epoch_length`
