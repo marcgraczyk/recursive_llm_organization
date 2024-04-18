@@ -11,7 +11,7 @@ async function main() {
     const BToken = await ethers.getContractFactory("BToken");
 
     console.log("Deploying BToken");
-    const bToken = await BToken.deploy("MockUSDC", "MUSDC", reserveTokenAddress)
+    const bToken = await BToken.deploy("MockUSDC", "MUSDC", reserveTokenAddress, deployer.address, deployer.address)
 
     console.log("BToken deployed to:", bToken.address);
 }

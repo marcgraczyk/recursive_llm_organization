@@ -18,19 +18,22 @@ contract MyGovernor is
     GovernorVotesQuorumFraction,
     IGovernance
 {
-    uint256 private _lastProposalId;
-    string private _lastModelUrl;
+    uint256 private lastProposalId;
+    string private lastModelUrl;
     event ProposalCreated(uint256 indexed proposalID, string currentModelUrl);
     mapping(uint256 => uint256) private _customVotingPeriods;
 
     constructor(
-        IVotes _token
+        IVotes _token,
+        string memory _lastModelUrl
     )
         Governor("MyGovernor")
         GovernorSettings(7200 /* 1 day */, 50400 /* 1 week */, 0)
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(4)
-    {}
+    {
+        lastModelUrl = _lastModelUrl;
+    }
 
     // The following functions are overrides required by Solidity.
 
@@ -48,34 +51,27 @@ contract MyGovernor is
         string memory description,
         string memory currentModelUrl
     ) public override(IGovernance) returns (uint256) {
-        uint256 proposalID = super.propose(
-            targets,
-            values,
-            calldatas,
-            description
-        );
-        emit ProposalCreated(proposalID, currentModelUrl);
-
-        bool isModelUrlChanged = false; // Default to false
-
-        // Only perform the check if _lastModelUrl is not empty
-        if (bytes(_lastModelUrl).length > 0) {
-            isModelUrlChanged =
-                keccak256(abi.encodePacked(currentModelUrl)) !=
-                keccak256(abi.encodePacked(_lastModelUrl));
-        }
-
-        _lastModelUrl = currentModelUrl;
-
-        // Store the currentModelUrl for future comparisons
-
-        // Proceed to call the original propose function
         uint256 proposalId = super.propose(
             targets,
             values,
             calldatas,
             description
         );
+
+        emit ProposalCreated(proposalId, currentModelUrl);
+
+        bool isModelUrlChanged = false; // Default to false
+
+        // Only perform the check if _lastModelUrl is not empty
+        if (bytes(lastModelUrl).length > 0) {
+            isModelUrlChanged =
+                keccak256(abi.encodePacked(currentModelUrl)) !=
+                keccak256(abi.encodePacked(lastModelUrl));
+        }
+
+        lastModelUrl = currentModelUrl;
+
+        // Store the currentModelUrl for future comparisons
 
         // If isModelUrlChanged is true, adjust the voting period or store information to adjust the voting logic
         if (isModelUrlChanged) {
@@ -85,7 +81,9 @@ contract MyGovernor is
             // default voting period
             _setCustomVotingPeriod(proposalId, 0);
         }
-        return proposalID;
+        //return proposalID;
+        lastProposalId = proposalId;
+        return proposalId;
     }
 
     function votingPeriod()
@@ -94,7 +92,7 @@ contract MyGovernor is
         override(Governor, GovernorSettings)
         returns (uint256)
     {
-        uint256 proposalId = _lastProposalId;
+        uint256 proposalId = lastProposalId;
 
         if (_customVotingPeriods[proposalId] != 0) {
             return _customVotingPeriods[proposalId];

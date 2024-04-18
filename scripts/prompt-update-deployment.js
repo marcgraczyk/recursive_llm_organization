@@ -4,27 +4,25 @@ const hre = require("hardhat");
 
 async function main() {
     // Replace the following addresses with your actual contract addresses
-    const usdcTokenAddress = "0xf08A50178dfcDe18524640EA6618a1f965821715";
-    const daoTokenAddress = "0xe165BCDd9e093399Ccb03fE2cb199DDA164efdee";
-    const governanceAddress = "0xAb3CD5D6C3Da57060fa0403260632b530D583bA2";
-    const fee = 500;
+    const usdcTokenAddress = "0x014f31e84328a6A134dcEF0F58FFB0947fC8a96C";
+    const bTokenAddress = "0x1dE66E61eBD4DD176F9F9da9Ec138B87395682ec";
+    const governanceAddress = "0x427a1322c246888545b9F9959dB9433716995a6F";
+    const epochLength = 1;
 
     // Assuming NonfungiblePositionManager and UniswapV3Factory are already deployed
     // and their addresses are known (for Uniswap official deployments, these addresses
     // are constant and well-known)
-    const nonfungiblePositionManagerAddress = "0x1238536071E1c677A632429e3655c799b22cDA52";
-    const uniswapV3FactoryAddress = "0x0227628f3F023bb0B980b67D528571c95c6DaC1c";
+    // const nonfungiblePositionManagerAddress = "0x1238536071E1c677A632429e3655c799b22cDA52";
+    // const uniswapV3FactoryAddress = "0x0227628f3F023bb0B980b67D528571c95c6DaC1c";
     // Get the contract factory for the PromptUpdate contract
     const PromptUpdate = await hre.ethers.getContractFactory("PromptUpdate");
 
     // Deploy the contract with the necessary constructor arguments
     const promptUpdate = await PromptUpdate.deploy(
         usdcTokenAddress,
-        daoTokenAddress,
+        bTokenAddress,
         governanceAddress,
-        nonfungiblePositionManagerAddress,
-        uniswapV3FactoryAddress,
-        fee
+        epochLength
     );
 
     await promptUpdate.deployed();

@@ -5,14 +5,14 @@ const { ethers } = require("hardhat");
 const reserveTokenAddress = "0x014f31e84328a6A134dcEF0F58FFB0947fC8a96C";
 
 //const amountToApprove1 = ethers.utils.formatEther(1);
-const amountToApprove = ethers.utils.parseUnits("2", 18);
+const amountToApprove = ethers.utils.parseUnits("2000000", 18);
 //const amountToApprove = ethers.utils.formatUnits(1, 18)
 
-const BTAddress = "0x20D699de74D1A9Fe9E69Ea05c4EEaBD0E69f443f";
+const BTAddress = "0x1dE66E61eBD4DD176F9F9da9Ec138B87395682ec";
 
 //const amountToMint1 = ethers.utils.formatEther(0.00000001);
 //const amountToMint = ethers.utils.parseUnits("1", 18);
-const amountToMint = 1000;
+const amountToMint = 1000000000000;
 
 
 async function main() {
@@ -40,8 +40,8 @@ async function main() {
     const reserveTokenBalance = await reserveToken.balanceOf(signer.address);
     const bTokenBalance = await bToken.balanceOf(signer.address);
 
-    // const tx2 = await bToken.mint(amountToMint);
-    // await tx2.wait();
+    const tx2 = await bToken.mint(amountToMint);
+    await tx2.wait();
 
     console.log(`Current reserve token balance: ${ethers.utils.formatUnits(reserveTokenBalance, 18)} reserve tokens`);
     console.log(`Current BToken balance: ${ethers.utils.formatUnits(bTokenBalance, 18)} BToken`);

@@ -58,6 +58,7 @@ contract PromptUpdate {
 
         lastUpdateBlock = block.number;
         lastBidAmount = 0;
+        lastMarketCap = 0;
         epochLength = _epochLength;
     }
 
@@ -81,48 +82,48 @@ contract PromptUpdate {
         uint256 blocksElapsed = block.number - lastUpdateBlock;
 
         // Check that enough blocks have passed to be at least one epoch length
-        require(
-            blocksElapsed >= epochLength,
-            "Not enough blocks passed since last update."
-        );
+        // require(
+        //     blocksElapsed >= epochLength,
+        //     "Not enough blocks passed since last update."
+        // );
 
         // Require that blocks elapsed since the last update is an exact multiple of epoch length
-        require(
-            blocksElapsed % epochLength == 0,
-            "Update can only occur at exact epoch multiples."
-        );
+        // require(
+        //     blocksElapsed % epochLength == 0,
+        //     "Update can only occur at exact epoch multiples."
+        // );
 
         uint256 epochElapsed = blocksElapsed / epochLength;
         uint256 requiredBid = lastBidAmount / epochElapsed;
 
-        require(
-            tokenAmount > requiredBid,
-            "Bid does not meet the minimum requirement"
-        );
+        // require(
+        //     tokenAmount > requiredBid,
+        //     "Bid does not meet the minimum requirement"
+        // );
 
         // need to allow for payment in both tokens -> calculate the bid amount nominally
 
-        IERC20(bToken).safeTransferFrom(msg.sender, address(this), tokenAmount);
+        // IERC20(bToken).safeTransferFrom(msg.sender, address(this), tokenAmount);
 
-        governance.propose(
-            proposalData.targets,
-            proposalData.values,
-            proposalData.calldatas,
-            proposalData.description,
-            proposalData.currentModelUrl
-        );
+        // governance.propose(
+        //     proposalData.targets,
+        //     proposalData.values,
+        //     proposalData.calldatas,
+        //     proposalData.description,
+        //     proposalData.currentModelUrl
+        // );
 
         // reward mechanism
 
-        if (lastMarketCap != 0 && lastPrompter != address(0)) {
-            uint256 marketCapChange = currentMarketCap - lastMarketCap;
-            uint256 rewardAmount = marketCapChange / (10 * currentPrice); // 10% of the market cap change
+        // if (lastMarketCap != 0 && lastPrompter != address(0)) {
+        //     uint256 marketCapChange = currentMarketCap - lastMarketCap;
+        //     uint256 rewardAmount = marketCapChange / (10 * currentPrice); // 10% of the market cap change
 
-            // Mint and send the reward to the last prompter
-            IBToken(bToken).governanceMint(lastPrompter, rewardAmount);
-        } else if (currentMarketCap < lastMarketCap) {
-            IBToken(bToken).governanceBurn(address(this), tokenAmount);
-        }
+        //     // Mint and send the reward to the last prompter
+        //     IBToken(bToken).governanceMint(lastPrompter, rewardAmount);
+        // } else if (currentMarketCap < lastMarketCap) {
+        //     IBToken(bToken).governanceBurn(address(this), tokenAmount);
+        // }
 
         // if the market cap decreased burn the token amount
         // give a bigger allowance for negative rewards?
