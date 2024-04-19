@@ -19,7 +19,7 @@ async function main() {
         targets: [bTokenAddress],
         values: [0], // No Ether is sent with the mint function
         calldatas: [mintCalldata],
-        description: "test1",
+        description: "test2",
     };
 
     //currentModelUrl: "https://hackmd.io/uCvCVxOxS6iuzkpT9q8MmQ"

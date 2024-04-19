@@ -6,7 +6,7 @@ async function main() {
     // Replace the following addresses with your actual contract addresses
     const usdcTokenAddress = "0x014f31e84328a6A134dcEF0F58FFB0947fC8a96C";
     const bTokenAddress = "0x1dE66E61eBD4DD176F9F9da9Ec138B87395682ec";
-    const governanceAddress = "0x26794076DB3E01DB5f78fc9DC2d3367626569BC4";
+    const governanceAddress = "0x0beF131983302135F450dD91899F26a15A3156Df";
     const epochLength = 1;
 
     // Assuming NonfungiblePositionManager and UniswapV3Factory are already deployed

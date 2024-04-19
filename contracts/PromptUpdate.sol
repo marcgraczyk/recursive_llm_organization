@@ -121,7 +121,7 @@ contract PromptUpdate {
         //     uint256 marketCapChange = currentMarketCap - lastMarketCap;
         //     uint256 rewardAmount = marketCapChange / (10 * currentPrice); // 10% of the market cap change
 
-        //     // Mint and send the reward to the last prompter
+        // Mint and send the reward to the last prompter
         //     IBToken(bToken).governanceMint(lastPrompter, rewardAmount);
         // } else if (currentMarketCap < lastMarketCap) {
         //     IBToken(bToken).governanceBurn(address(this), tokenAmount);
