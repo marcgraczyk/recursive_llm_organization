@@ -4,9 +4,18 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+
 //import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract BToken is ERC20, ERC20Burnable, AccessControl {
+contract BToken is
+    ERC20,
+    ERC20Burnable,
+    ERC20Permit,
+    ERC20Votes,
+    AccessControl
+{
     IERC20 public reserveToken;
 
     uint256 public totalTokensMinted;
@@ -24,7 +33,7 @@ contract BToken is ERC20, ERC20Burnable, AccessControl {
         address _reserveToken,
         address defaultAdmin,
         address minter
-    ) ERC20(name, symbol) {
+    ) ERC20(name, symbol) ERC20Permit(name) {
         require(
             _reserveToken != address(0),
             "Reserve token address cannot be 0"
@@ -119,5 +128,19 @@ contract BToken is ERC20, ERC20Burnable, AccessControl {
     ) public onlyRole(MINTER_ROLE) {
         _burn(from, amount);
         totalTokensBurned += amount;
+    }
+
+    function _update(
+        address from,
+        address to,
+        uint256 value
+    ) internal override(ERC20, ERC20Votes) {
+        super._update(from, to, value);
+    }
+
+    function nonces(
+        address owner
+    ) public view override(ERC20Permit, Nonces) returns (uint256) {
+        return super.nonces(owner);
     }
 }
