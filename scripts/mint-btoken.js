@@ -12,7 +12,7 @@ const BTAddress = "0x1dE66E61eBD4DD176F9F9da9Ec138B87395682ec";
 
 //const amountToMint1 = ethers.utils.formatEther(0.00000001);
 //const amountToMint = ethers.utils.parseUnits("1", 18);
-const amountToMint = 1000000000000;
+const amountToMint = 1000;
 
 
 async function main() {
@@ -37,11 +37,21 @@ async function main() {
     const cost = await price.mul(amountToMint)
     console.log(`The price to mint ${amountToMint} wei token is: ${ethers.utils.formatUnits(cost, 18)} reserve tokens`);
 
+    const currentPrice = await bToken.currentPrice()
+    const totalMinted = await bToken.totalTokensMinted();
+    const totalBurned = await bToken.totalTokensBurned();
+    const marketCap = currentPrice * (totalMinted - totalBurned);
+    console.log(currentPrice);
+    console.log(totalMinted);
+    console.log(totalBurned);
+    console.log(marketCap);
+
+
     const reserveTokenBalance = await reserveToken.balanceOf(signer.address);
     const bTokenBalance = await bToken.balanceOf(signer.address);
 
-    const tx2 = await bToken.mint(amountToMint);
-    await tx2.wait();
+    // const tx2 = await bToken.mint(amountToMint);
+    // await tx2.wait();
 
     console.log(`Current reserve token balance: ${ethers.utils.formatUnits(reserveTokenBalance, 18)} reserve tokens`);
     console.log(`Current BToken balance: ${ethers.utils.formatUnits(bTokenBalance, 18)} BToken`);

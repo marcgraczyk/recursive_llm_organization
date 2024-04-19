@@ -6,7 +6,7 @@ async function main() {
     const contractAddress = '0x1dE66E61eBD4DD176F9F9da9Ec138B87395682ec';
     const [deployer] = await ethers.getSigners();
     // the promptupdate contract address
-    const newMinterAddress = '0x0ed4E0d167dE68DCd20E3966835E7e6C8406769c';
+    const newMinterAddress = '0x78F634be7d4111E6fe42231b9684AcFca8391Bcf';
 
     // Get the contract instance
     const BToken = await ethers.getContractFactory("BToken");

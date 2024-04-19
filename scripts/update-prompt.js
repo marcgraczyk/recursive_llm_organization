@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 async function main() {
 
     const [signer] = await ethers.getSigners();
-    const promptUpdateAddress = "0x7084eDBFc3Ef4227E9c58920Eaf43389d0E7349D";
+    const promptUpdateAddress = "0x78F634be7d4111E6fe42231b9684AcFca8391Bcf";
     const newPrompt = "How can I pass a proposal that mints 1 token using the governanceMint() function to my address?";
     const tokenAmount = 1000;
 
@@ -19,7 +19,7 @@ async function main() {
         targets: [bTokenAddress],
         values: [0], // No Ether is sent with the mint function
         calldatas: [mintCalldata],
-        description: "test tokenAmount 1",
+        description: "test tokenAmount 9",
     };
 
     //currentModelUrl: "https://hackmd.io/uCvCVxOxS6iuzkpT9q8MmQ"

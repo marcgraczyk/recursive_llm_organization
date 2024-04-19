@@ -78,7 +78,8 @@ contract PromptUpdate {
         uint256 totalMinted = IBToken(bToken).totalTokensMinted();
         uint256 totalBurned = IBToken(bToken).totalTokensBurned();
         uint256 netMint = totalMinted - totalBurned;
-        uint256 currentMarketCap = currentPrice * netMint;
+        uint256 currentMarketCap = (currentPrice * netMint);
+        //might divide by 10**18 here
 
         uint256 blocksElapsed = block.number - lastUpdateBlock;
 
@@ -116,16 +117,20 @@ contract PromptUpdate {
         //proposalData.currentModelUrl
 
         // reward mechanism
-
-        // if (lastMarketCap != 0 && lastPrompter != address(0)) {
-        //     uint256 marketCapChange = currentMarketCap - lastMarketCap;
-        //     uint256 rewardAmount = marketCapChange / (10 * currentPrice); // 10% of the market cap change
-
-        // Mint and send the reward to the last prompter
-        //     IBToken(bToken).governanceMint(lastPrompter, rewardAmount);
-        // } else if (currentMarketCap < lastMarketCap) {
-        //     IBToken(bToken).governanceBurn(address(this), tokenAmount);
-        // }
+        uint256 marketCapChange = currentMarketCap - lastMarketCap;
+        uint256 rewardAmount = marketCapChange / (10 * currentPrice);
+        // 10% of the market cap change
+        // the version of the contract with the marketCapChange outside of the if loop is not yet implemented
+        if (
+            lastMarketCap != 0 &&
+            lastPrompter != address(0) &&
+            marketCapChange != 0
+        ) {
+            //Mint and send the reward to the last prompter
+            IBToken(bToken).governanceMint(lastPrompter, rewardAmount);
+        } else if (currentMarketCap < lastMarketCap) {
+            IBToken(bToken).governanceBurn(address(this), tokenAmount);
+        }
 
         // if the market cap decreased burn the token amount
         // give a bigger allowance for negative rewards?
