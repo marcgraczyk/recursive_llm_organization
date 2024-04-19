@@ -38,10 +38,11 @@ contract PromptUpdate {
         uint256[] values;
         bytes[] calldatas;
         string description;
-        string currentModelUrl;
     }
 
-    // the description should be the prompt -> can be enforced by social consensus
+    //string currentModelUrl;
+
+    //the description should be the prompt -> can be enforced by social consensus
 
     constructor(
         address _usdcTokenAddress,
@@ -105,13 +106,14 @@ contract PromptUpdate {
 
         // IERC20(bToken).safeTransferFrom(msg.sender, address(this), tokenAmount);
 
-        // governance.propose(
-        //     proposalData.targets,
-        //     proposalData.values,
-        //     proposalData.calldatas,
-        //     proposalData.description,
-        //     proposalData.currentModelUrl
-        // );
+        governance.propose(
+            proposalData.targets,
+            proposalData.values,
+            proposalData.calldatas,
+            proposalData.description
+        );
+
+        //proposalData.currentModelUrl
 
         // reward mechanism
 

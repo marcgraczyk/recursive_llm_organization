@@ -9,9 +9,10 @@ import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 
-//    IGovernance
+//    IGovernance -> not added explicitly here, the prompt update contract is calling through this interface
 
 contract MyGovernor is
+    IGovernance,
     Governor,
     GovernorSettings,
     GovernorCountingSimple,
@@ -32,20 +33,6 @@ contract MyGovernor is
         GovernorVotesQuorumFraction(4)
     {
         lastModelUrl = _lastModelUrl;
-    }
-    //string memory currentModelUrl
-    function propose(
-        address[] memory targets,
-        uint256[] memory values,
-        bytes[] memory calldatas,
-        string memory description
-    ) public override(Governor) returns (uint256) {
-        return super.propose(targets, values, calldatas, description);
-        //uint256 proposalId =
-        //emit ProposalCreated(proposalId, currentModelUrl);
-        // lastModelUrl = currentModelUrl; // Update lastModelUrl
-        // lastProposalId = proposalId; // Update lastProposalId
-        //return proposalId;
     }
 
     function votingPeriod()
@@ -85,4 +72,29 @@ contract MyGovernor is
     {
         return super.proposalThreshold();
     }
+
+    function propose(
+        address[] memory targets,
+        uint256[] memory values,
+        bytes[] memory calldatas,
+        string memory description
+    ) public override(Governor, IGovernance) returns (uint256) {
+        // you can customize this method as needed, or directly use an existing implementation
+        return super.propose(targets, values, calldatas, description);
+    }
 }
+
+//string memory currentModelUrl
+// function propose(
+//     address[] memory targets,
+//     uint256[] memory values,
+//     bytes[] memory calldatas,
+//     string memory description
+// ) public override(Governor) returns (uint256) {
+//     return super.propose(targets, values, calldatas, description);
+//uint256 proposalId =
+//emit ProposalCreated(proposalId, currentModelUrl);
+// lastModelUrl = currentModelUrl; // Update lastModelUrl
+// lastProposalId = proposalId; // Update lastProposalId
+//return proposalId;
+// }

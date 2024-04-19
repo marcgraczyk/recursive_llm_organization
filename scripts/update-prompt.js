@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 async function main() {
 
     const [signer] = await ethers.getSigners();
-    const promptUpdateAddress = "0x3B55d80c6621Bbcfc5aCa12fDA3a75b9457725F6";
+    const promptUpdateAddress = "0x02ACEf23F19E84bb0Db12b784C05eDAd7c90ffd8";
     const newPrompt = "How can I pass a proposal that mints 1 token using the governanceMint() function to my address?";
     const tokenAmount = 1000;
 
@@ -16,12 +16,14 @@ async function main() {
     const mintCalldata = bToken.interface.encodeFunctionData("governanceMint", [recipientAddress, mintAmount]);
 
     const proposalData = {
-        targets: [],
-        values: ["0"], // No Ether is sent with the mint function
-        calldatas: [],
-        description: "test",
-        currentModelUrl: "https://hackmd.io/uCvCVxOxS6iuzkpT9q8MmQ"
+        targets: [bTokenAddress],
+        values: [0], // No Ether is sent with the mint function
+        calldatas: [mintCalldata],
+        description: "test1",
     };
+
+    //currentModelUrl: "https://hackmd.io/uCvCVxOxS6iuzkpT9q8MmQ"
+
     //Mint 1 token from the governanceMint() function
 
     // Connect to your contract
