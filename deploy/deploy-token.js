@@ -11,7 +11,7 @@ async function main() {
 
     // Deploy the implementation contract and the proxy, then initialize the proxy
     console.log("Deploying MyToken and Proxy");
-    const myToken = await MyToken.deployProxy(MyToken, [
+    const myToken = await upgrades.deployProxy(MyToken, [
         /* defaultAdmin, pauser, minter, upgrader addresses here */
         deployer.address,
         deployer.address,
