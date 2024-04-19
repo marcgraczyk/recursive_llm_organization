@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 async function main() {
 
     const [signer] = await ethers.getSigners();
-    const promptUpdateAddress = "0x02ACEf23F19E84bb0Db12b784C05eDAd7c90ffd8";
+    const promptUpdateAddress = "0x7084eDBFc3Ef4227E9c58920Eaf43389d0E7349D";
     const newPrompt = "How can I pass a proposal that mints 1 token using the governanceMint() function to my address?";
     const tokenAmount = 1000;
 
@@ -19,7 +19,7 @@ async function main() {
         targets: [bTokenAddress],
         values: [0], // No Ether is sent with the mint function
         calldatas: [mintCalldata],
-        description: "test2",
+        description: "test tokenAmount 1",
     };
 
     //currentModelUrl: "https://hackmd.io/uCvCVxOxS6iuzkpT9q8MmQ"
@@ -30,15 +30,19 @@ async function main() {
     const PromptUpdate = await ethers.getContractFactory("PromptUpdate");
     const promptUpdate = await PromptUpdate.attach(promptUpdateAddress);
 
+    const tx1 = await bToken.approve(promptUpdateAddress, tokenAmount);
+    await tx1.wait();
+    console.log("approval success");
+
     // Update prompt and submit proposal
-    const tx = await promptUpdate.connect(signer).updatePrompt(
+    const tx2 = await promptUpdate.connect(signer).updatePrompt(
         newPrompt,
         tokenAmount,
         proposalData
     );
-    await tx.wait();
+    await tx2.wait();
 
-    console.log(`Prompt updated and proposal submitted. Transaction Hash: ${tx.hash}`);
+    console.log(`Prompt updated and proposal submitted. Transaction Hash: ${tx2.hash}`);
 }
 
 main().catch((error) => {

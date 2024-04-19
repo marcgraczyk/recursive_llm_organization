@@ -10,6 +10,7 @@ const USDCAddress = '0xf08A50178dfcDe18524640EA6618a1f965821715';
 
 const mockUSDCAddress = '0x014f31e84328a6A134dcEF0F58FFB0947fC8a96C';
 const btokenAddress = '0x1dE66E61eBD4DD176F9F9da9Ec138B87395682ec';
+const promptUpdateAddress = "0xE0bac798cF1c189F6a2c4aF37e9b0aD219EcF1e1";
 
 // The ABI (Application Binary Interface) of your DAO token's contract for the balanceOf function
 // This is a simplified ABI for the balanceOf function common to ERC20 tokens
@@ -29,8 +30,8 @@ const mockUSDCContract = new ethers.Contract(mockUSDCAddress, mockUSDCAbi, provi
 
 async function checkBalance() {
     // Call the balanceOf function
-    const tokenBalance = await tokenContract.balanceOf(walletAddress);
-    const usdcBalance = await mockUSDCContract.balanceOf(walletAddress);
+    const tokenBalance = await tokenContract.balanceOf(promptUpdateAddress);
+    const usdcBalance = await mockUSDCContract.balanceOf(promptUpdateAddress);
 
     // ethers.js returns BigNumber objects for values, so we convert it to a string for readability
     //console.log(`Balance: ${ethers.utils.formatEther(tokenBalance)} BTokens`);

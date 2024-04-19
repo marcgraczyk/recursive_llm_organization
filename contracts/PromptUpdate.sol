@@ -83,28 +83,28 @@ contract PromptUpdate {
         uint256 blocksElapsed = block.number - lastUpdateBlock;
 
         // Check that enough blocks have passed to be at least one epoch length
-        // require(
-        //     blocksElapsed >= epochLength,
-        //     "Not enough blocks passed since last update."
-        // );
+        require(
+            blocksElapsed >= epochLength,
+            "Not enough blocks passed since last update."
+        );
 
         // Require that blocks elapsed since the last update is an exact multiple of epoch length
-        // require(
-        //     blocksElapsed % epochLength == 0,
-        //     "Update can only occur at exact epoch multiples."
-        // );
+        require(
+            blocksElapsed % epochLength == 0,
+            "Update can only occur at exact epoch multiples."
+        );
 
         uint256 epochElapsed = blocksElapsed / epochLength;
         uint256 requiredBid = lastBidAmount / epochElapsed;
 
-        // require(
-        //     tokenAmount > requiredBid,
-        //     "Bid does not meet the minimum requirement"
-        // );
+        require(
+            tokenAmount > requiredBid,
+            "Bid does not meet the minimum requirement"
+        );
 
         // need to allow for payment in both tokens -> calculate the bid amount nominally
 
-        // IERC20(bToken).safeTransferFrom(msg.sender, address(this), tokenAmount);
+        IERC20(bToken).safeTransferFrom(msg.sender, address(this), tokenAmount);
 
         governance.propose(
             proposalData.targets,
