@@ -30,7 +30,7 @@ contract MyGovernor is
         Governor("MyGovernor")
         GovernorSettings(7200 /* 1 day */, 50400 /* 1 week */, 0)
         GovernorVotes(_token)
-        GovernorVotesQuorumFraction(4)
+        GovernorVotesQuorumFraction(1)
     {
         lastModelUrl = _lastModelUrl;
     }
@@ -73,13 +73,13 @@ contract MyGovernor is
         return super.proposalThreshold();
     }
 
+    // add a currentModelUrl parameter
     function propose(
         address[] memory targets,
         uint256[] memory values,
         bytes[] memory calldatas,
         string memory description
     ) public override(Governor, IGovernance) returns (uint256) {
-        // you can customize this method as needed, or directly use an existing implementation
         return super.propose(targets, values, calldatas, description);
     }
 }

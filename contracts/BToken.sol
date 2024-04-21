@@ -44,21 +44,27 @@ contract BToken is
         _grantRole(MINTER_ROLE, minter);
     }
 
-    function priceToMint(uint256 numTokens) public view returns (uint256) {
+    // function priceToMint(uint256 numTokens) public view returns (uint256) {
+    //     uint256 netTokensMinted = totalTokensMinted - totalTokensBurned;
+    //     return netTokensMinted + numTokens;
+    // }
+    function costToMint(uint256 numTokens) public view returns (uint256) {
         uint256 netTokensMinted = totalTokensMinted - totalTokensBurned;
-
-        return netTokensMinted + numTokens;
+        return ((2 * netTokensMinted + numTokens) * numTokens) / 2;
     }
+
+    // function rewardForBurn(uint256 numTokens) public view returns (uint256) {
+    //     return currentPrice * numTokens;
+    // }
 
     function rewardForBurn(uint256 numTokens) public view returns (uint256) {
-        // Calculate reward based on current price times the number of tokens burned
-        //uint256 currentPrice = priceToMint(0); // Current price per token
-        return currentPrice * numTokens;
+        uint256 netTokensMinted = totalTokensMinted - totalTokensBurned;
+        return ((2 * netTokensMinted - numTokens) * numTokens) / 2;
     }
 
-    function mint(uint256 numTokens) public {
-        uint256 priceForTokens = numTokens * priceToMint(numTokens);
-
+    function permissionlessMint(uint256 numTokens) public {
+        uint256 priceForTokens = costToMint(numTokens);
+        // uint256 priceForTokens = numTokens * priceToMint(numTokens);
         // Debugging: Check the caller's reserve token balance
         uint256 callerBalance = reserveToken.balanceOf(msg.sender);
         emit DebugBalance(callerBalance);
@@ -88,7 +94,8 @@ contract BToken is
 
         _mint(msg.sender, numTokens);
         totalTokensMinted += numTokens;
-        currentPrice = priceToMint(0);
+        currentPrice = totalTokensMinted - totalTokensBurned;
+        // currentPrice = priceToMint(0);
 
         // can emit a price event
     }
@@ -99,6 +106,7 @@ contract BToken is
     ) public onlyRole(MINTER_ROLE) {
         _mint(to, amount);
         totalTokensMinted += amount;
+        currentPrice = totalTokensMinted - totalTokensBurned;
     }
 
     function burn(uint256 numTokens) public override {
@@ -117,8 +125,8 @@ contract BToken is
             reserveToken.transfer(msg.sender, reserveTokensToReturn),
             "Transfer failed"
         );
-        currentPrice = priceToMint(0);
-
+        currentPrice = totalTokensMinted - totalTokensBurned;
+        // currentPrice = priceToMint(0);
         // can emit a price change event
     }
 
@@ -128,6 +136,7 @@ contract BToken is
     ) public onlyRole(MINTER_ROLE) {
         _burn(from, amount);
         totalTokensBurned += amount;
+        currentPrice = totalTokensMinted - totalTokensBurned;
     }
 
     function _update(
