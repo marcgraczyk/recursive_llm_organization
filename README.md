@@ -171,8 +171,8 @@ The presented mechanism can be motivated by the integration of retroactive fundi
 
 The main branch currently uses non-upgradeable contracts.
 
-**Mint and redeem contract**
-* [ ] modify the cost to mint and reward burn function to reflect the readme (current version is simpler)
+**BToken contract**
+* [x] modify the cost to mint and reward burn function to reflect the readme (current version is simpler)
 
 **PromptUpdate contract**
 
@@ -182,10 +182,10 @@ The main branch currently uses non-upgradeable contracts.
 
 **Proposals**
 
-* [ ] test the prompt update contract by submitting a proposal 
+* [x] test the prompt update contract by submitting a proposal 
     * the proposal asks to mint tokens 
-* [ ] test the reward mechanism 
-* [ ] test the minimum required next bid
+* [x] test the reward mechanism 
+* [x] test the minimum required next bid
 * [ ] create a token treasury 
 * [ ] submit a proposal to send tokens from this treasury to a given address
 * [ ] test the two speed voting period system

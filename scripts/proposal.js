@@ -20,7 +20,7 @@ async function main() {
     const targets = [bTokenAddress]; // Address of the contract to be called
     const values = [0]; // Ether values for the transaction (usually 0 in governance actions)
     const calldatas = [mintCalldata];
-    const description = "test";
+    const description = "test execute proposal";
     const modelUrl = "https://hackmd.io/uCvCVxOxS6iuzkpT9q8MmQ";
 
     const tx = await governor.propose(
