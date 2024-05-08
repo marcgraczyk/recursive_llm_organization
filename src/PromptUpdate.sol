@@ -41,7 +41,6 @@ contract PromptUpdate {
     }
 
     //string currentModelUrl;
-
     //the description should be the prompt -> can be enforced by social consensus
 
     constructor(
@@ -63,12 +62,6 @@ contract PromptUpdate {
         epochLength = _epochLength;
     }
 
-    /**
-     * Updates the prompt if the sent bid meets the required threshold.
-     * The first transaction to call this function in a new block with a sufficient bid amount gets to update the prompt.
-     *
-     * @param newPrompt The new prompt to be updated to.
-     */
     function updatePrompt(
         string memory newPrompt,
         uint256 tokenAmount,
@@ -115,7 +108,6 @@ contract PromptUpdate {
         );
 
         //proposalData.currentModelUrl
-
         // reward mechanism
         uint256 marketCapChange = currentMarketCap - lastMarketCap;
         uint256 rewardAmount = marketCapChange / (10 * currentPrice);
